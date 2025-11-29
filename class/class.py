@@ -22,9 +22,22 @@ class Game(Base):
     rank_game = Column(Integer)
     name_game = Column(String, nullable=False)
     # relation avec les autres tables
+    # avec table de fait Sales
+    game_sale = relationship('Sale', back_populates='game')
     # avec table d'association Users_Games
     user_game = relationship('User_Game', back_populates='game')
+    # avec la table d'association Games_Platforms
+    game_platform = relationship('Game_Platform', back_populates='game')
+    # avec la table de dimensions Genres
+    # clé etrangère venant de Genres
     id_genre_fk = Column(Integer, ForeignKey('Genres.id_genre'))
+    game_genre = relationship('Genre', back_populates='game')
+    # avec la table de dimensions Publishers
+    # clé etrangère venant de Publishers
+    id_publisher_fk = Column(Integer, ForeignKey('Publishers.id_publisher'))
+    game_publisher = relationship('Publisher', back_populates='game')
+
+## to be continued
 
 class Sale(Base):
     __tablename__ = 'Sales'
@@ -61,6 +74,6 @@ class User_Game(Base):
     # relation avec les autres tables
 
 class Game_Platform(Base):
-    __tablename__ = 'Games_Users'
+    __tablename__ = 'Games_Platforms'
     release_year = Column(Integer, nullable=True)
     # relation avec les autres tables
