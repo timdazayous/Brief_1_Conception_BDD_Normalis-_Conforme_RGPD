@@ -15,4 +15,4 @@ Base = declarative_base()
 
 # 3. Configuration de la session :
 # Lie la session à notre moteur (engine) pour pouvoir interagir avec la BDD.
-# Session = sessionmaker(bind=engine) # dans le main.py
+Session = sessionmaker(bind=engine) # dans le main.py
