@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
-from sqlalchemy.orm import declarative_base, relationship
-
-Base = declarative_base()
+from sqlalchemy.orm import relationship # ,declarative_base
+# On recupere base depuis database.py
+from database import Base
+# Base = declarative_base()
 
 class User(Base):
     __tablename__= 'Users'
@@ -37,7 +38,6 @@ class Game(Base):
     id_publisher_fk = Column(Integer, ForeignKey('Publishers.id_publisher'))
     publishers = relationship('Publisher', back_populates='games')
 
-## to be continued
 
 class Sale(Base):
     __tablename__ = 'Sales'
