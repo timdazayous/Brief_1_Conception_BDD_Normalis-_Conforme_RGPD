@@ -11,11 +11,11 @@ class Game(Base):
     name_game = Column(String, nullable=False)
     # relation avec les autres tables
     # avec table de fait Sales
-    sales = relationship('Sale', back_populates='game')
+    sales = relationship('Sale', back_populates='game', cascade='all, delete-orphan')
     # avec table d'association Users_Games
-    users_links = relationship('User_Game', back_populates='game')
+    users_links = relationship('User_Game', back_populates='game', cascade='all, delete-orphan')
     # avec la table d'association Games_Platforms
-    platforms_links = relationship('Game_Platform', back_populates='game')
+    platforms_links = relationship('Game_Platform', back_populates='game', cascade='all, delete-orphan')
     # avec la table de dimensions Genres
     # clé etrangère venant de Genres
     id_genre_fk = Column(Integer, ForeignKey('Genres.id_genre'))

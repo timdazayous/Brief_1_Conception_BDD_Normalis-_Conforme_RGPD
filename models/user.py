@@ -15,4 +15,4 @@ class User(Base):
     limitdate_user = Column(Integer, nullable=False)
     # relation avec les autres tables
     # avec table d'association Users_Games
-    games_links = relationship('User_Game', back_populates='user')
+    games_links = relationship('User_Game', back_populates='user',cascade='all, delete-orphan')
