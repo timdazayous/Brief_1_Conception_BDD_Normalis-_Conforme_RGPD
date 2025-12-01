@@ -33,12 +33,12 @@ def populate_from_CSV(CSV_path):
                 publishers[publisher] = publisher_objet
 
             # Platform
-            platform = row('Platform')
+            platform = row['Platform']
             if platform not in platforms:
-                platform_objet = models.platform(name_platform=platform)
+                platform_objet = models.Platform(name_platform=platform)
                 session.add(platform_objet)
                 session.flush() # force la recuperation d'id_platform
-                platforms[platform] 
+                platforms[platform] = platform_objet
 
         session.commit()
 
@@ -46,7 +46,7 @@ def populate_from_CSV(CSV_path):
         for i, row in CSV_df.iterrows():
             genre_objet = genres[row['Genre']]
             publisher_objet = publishers[row['Publisher']]
-            platform_objet = platforms[row['Platforms']]
+            platform_objet = platforms[row['Platform']]
 
             # Games
             game = models.Game(
@@ -68,4 +68,24 @@ def populate_from_CSV(CSV_path):
             session.add(game_platform)
 
             # Sales
-            
+            sale = models.Sale(
+                NA_sale = row.get('NA_Sales', 0),
+                EU_sale = row.get('EU_Sales',0),
+                JP_sale = row.get('JP_Sales', 0),
+                Other_sale = row.get('Other_Sales', 0),
+                Global_sale = row.get('Global_Sales', 0),
+                id_game_fk = game.id_game
+            )
+            session.add(sale)
+
+        session.commit()
+        print('Import de vgsales.csv reussi')
+        
+    except SQLAlchemyError as e:
+        session.rollback()
+        print(f'Erreur SQLAlchemy: {e}')
+    finally:
+        session.close()
+
+if __name__ == '__main__':
+    populate_from_CSV(CSV_path)
