@@ -7,6 +7,6 @@ from database import Base
 class Publisher(Base):
     __tablename__= 'Publishers'
     id_publisher = Column(Integer, primary_key=True)
-    name_publisher = Column(String, nullable=False)
+    name_publisher = Column(String, nullable=True)
     # relation 1,n avec Games 
     games = relationship('Game', back_populates='publishers')

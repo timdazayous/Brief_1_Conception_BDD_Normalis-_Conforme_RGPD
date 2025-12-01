@@ -25,7 +25,13 @@ def populate_from_CSV(CSV_path):
                 genres[genre] = genre_objet
 
             # Publisher
-            publisher = row['Publisher']
+
+            # publisher = row['Publisher']
+            # publisher_name peut etre null dans le csv 
+            # if pd.isna(publisher):
+            #    publisher = None
+            publisher = None if pd.isna(row['Publisher']) else row['Publisher']
+
             if publisher not in publishers:
                 publisher_objet = models.Publisher(name_publisher=publisher)
                 session.add(publisher_objet)
@@ -44,16 +50,18 @@ def populate_from_CSV(CSV_path):
 
         # ajouts des Games et des Sales
         for i, row in CSV_df.iterrows():
-            genre_objet = genres[row['Genre']]
-            publisher_objet = publishers[row['Publisher']]
-            platform_objet = platforms[row['Platform']]
+            # on remplace par None les champs vides dans le csv pour le name_genre name_publisher name_platform            
+            genre_objet = genres[row['Genre']] if not pd.isna(row['Genre']) else None
+            publisher_objet = publishers[row['Publisher']] if not pd.isna(row['Publisher']) else None
+            platform_objet = platforms[row['Platform']] if not pd.isna(row['Platform']) else None
 
             # Games
             game = models.Game(
                 rank_game = int(row['Rank']),
                 name_game = row['Name'],
-                id_genre_fk = genre_objet.id_genre,
-                id_publisher_fk = publisher_objet.id_publisher
+                # remplace la clé etrangere par None si vide dans le csv
+                id_genre_fk = genre_objet.id_genre if genre_objet else None,
+                id_publisher_fk = publisher_objet.id_publisher if publisher_objet else None
             )
             session.add(game)
             session.flush()

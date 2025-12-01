@@ -1,5 +1,6 @@
 from database import Base, engine, DATABASE_URL
 import models
+import os
 
 Base.metadata.create_all(bind=engine)
 
