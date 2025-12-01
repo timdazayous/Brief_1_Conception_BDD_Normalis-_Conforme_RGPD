@@ -3,4 +3,6 @@ import models
 
 Base.metadata.create_all(bind=engine)
 
-print(f'Base de données :{DATABASE_URL} initialisée')
+db_path = DATABASE_URL.replace("sqlite:///", "")
+db_name = os.path.basename(db_path)
+print(f'Base de données :{db_path} initialisée')
