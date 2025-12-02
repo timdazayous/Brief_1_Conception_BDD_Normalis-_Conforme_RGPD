@@ -134,3 +134,89 @@ def read_game():
     finally:
         session.close()
 
+# Update
+def update_user():
+    session = Session()
+    try: 
+        game_id_str = input('ID du jeu à modifier: ').strip()
+        if not game_id_str.isdigit():
+            print('ID invalide')
+            return
+        game = session.gets(models.Game, int(game_id_str))
+        if not game:
+            print('jeu non trouvé')
+            return
+        # jeu trouvé
+        print(f"Jeu trouvé: ID {game.id_game} - Rank {game.rank_game}- {game.name_gmae}")
+
+        # demande de saisi des modifications
+        new_rank_str = input('Nouveau rank (entier / entrée pour passer ou valider)').strip()
+        new_name = input ('Nouveau nom (entrée pour passer ou valider)').strip()
+        # modification du genre
+        genres = session.query(models.Genre).all()
+        id_genre = game.id_genre_fk
+        print("Saisissez le nouveau genre (entrée pour passer ou valider)")
+        # affichage de la liste des genres disponibles
+        if genres:
+            print('Liste du ou des genres disponibles')
+            for g in genres:
+                print(f'ID {g.id_genre} - {g.type_genre}')
+            genre_str = input('Nouvel ID genre (entrée pour passer / 0 pour enlever le genre actuel): ').strip()
+            if genre_str == '0':
+                id_genre = None
+            elif genre_str and genre_str.isdigit():
+                genre_id = int(genre_str)
+                if any(g.id_genre == genre_id for g in genres):
+                    id_genre = genre_id
+                else:
+                    print('ID genre invalide, inchangé, genre non trouvé')
+        # modification de Publisher
+        publishers = session.query(models.Publisher).all()
+        id_publisher = game.id_publisher_fk
+        print('Saisissez le nouveau publisher (entrée pour passer ou valider)')
+        if publishers:
+            print('Liste des publishers disponibles')
+            for p in publishers:
+                print(f"ID {p.id_publisher} - {p.name_publisher}")
+            publisher_str = input('Nouvel IG publisher (entrée pour passer / 0 pour enlever le publisher actuel)').strip()
+            if publisher_str == '0':
+                id_publisher = None
+            elif publisher_str and publisher_str.isdigit():
+                publisher_id = int(publisher_str)
+                if any (p.id_publisher == publisher_id for p in publishers)
+                    id_publisher = publisher_id
+                else:
+                    print('ID invalide, inchangé, publisher non trouvé')
+        # mise en place des modifications
+        updated = False
+        if new_rank_str:
+            try:
+                game.rank_game = int(new_rank_str)
+                updated = True
+            except ValueError:
+                print('Rank Invalide, non modifié')
+        if new_name:
+            game.name_game = new_name
+            updated = True
+        if id_genre != game.id_genre_fk:
+            game.id_genre_fk = id_genre
+            updated = True
+        if id_publisher != game.id_publisher_fk:
+            game.id_publisher_fk = id_publisher
+            updated = True
+
+        # si modification effectuées on commit
+        if updated:
+            session.commit()
+            print('Jeu mis à jour')
+        else:
+            print('Aucun changement effectué')
+
+    except SQLAlchemyError as e:
+        print('Update du jeu impossible: {e}')
+    finally:
+        session.close()
+
+def delete_game():
+    session=Session()
+    
