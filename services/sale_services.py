@@ -114,3 +114,74 @@ def read_sale():
     finally:
         session.close()
 
+# Update
+def update_sale():
+    session = Session()
+    try:
+        sale_id_str = input('ID de la sale à modifier').strip()
+        if not sale_id_str.isdigit()
+            print('ID invalide')
+            return
+        sale = session.get(models.Sale, int(sale_id_str))
+        if not sale:
+            print('Id invalide Sale introuvable')
+            return
+        print(f'Sale à modifiée ID {sale.id_sale} - ID jeu {sale.id_game_fk} {sale.game.name_game} - NA_sales {sale.NA_sale} - EU_sales {sale.EU_sale} - JP_sales {sale.JP_sale} - Other_sales {sale.Other_sale} - Global_sales {sale.Global_sale}')
+
+        def sale_amount_update(col_name, col_obj):
+            val_str = input(f"{col_name} actuel = {col_obj} - saisissez la nouvelle valeur (entrée pour passer ou valider)").strip()
+            if val_str == '':
+                return col_obj, False
+            try:
+                return float(val_str), True
+            except ValueError:
+                print('Valeur invalide, pas de modifications')
+                return col_obj, False
+        
+        updated = False
+        sale.NA_sale, modified = sale_amount_update('NA_sale', sale.NA_sale)
+        # updated prend True si lui ou si modified est True
+        updated = updated or modified
+        sale.JP_sale, modified = sale_amount_update('JP_sale', sale.JP_sale)
+        # updated prend True si lui ou si modified est True
+        updated = updated or modified
+        sale.EU_sale, modified = sale_amount_update('EU_sale', sale.EU_sale)
+        # updated prend True si lui ou si modified est True
+        updated = updated or modified
+        sale.Other_sale, modified = sale_amount_update('Other_sale', sale.Other_sale)
+        # updated prend True si lui ou si modified est True
+        updated = updated or modified
+        sale.Global_sale, modified = sale_amount_update('Gloabl_sale', sale.Global_sale)
+        # updated prend True si lui ou si modified est True
+        updated = updated or modified    
+
+        # modification du jeu lié a la sale
+        change_game = input('Changer le jeu lié ? (oui/non, yes/no): ').strip().lower()
+        if change_game in ('oui', 'yes'):
+            games = session.query(models.Game).all()
+            for g in games:
+                print(f"ID {g.id_game} - {g.name_game}")
+            game_id_str = input("Saisissez l'ID du nouveau jeu").strip()
+            if game_id_str.isdigit():
+                game_id = int(game_id_str)
+                if any(g.id_game == game_id for g in games):
+                    sale.id_game_fk = game_id
+                    updated = True
+                else:
+                    print('ID jeu invalide, pas de modification du jeu')
+            else:
+                print('ID invalide, pas de modifications')
+        if updated:
+            session.commit()
+            print('Sale mise à jour reussie')
+        else:
+            print('Aucunes modifications apportées à sale')
+    except SQLAlchemyError as e:
+        print(f"Erreur lors de l'updatede sale: {e}")
+        session.rollback()
+    finally:
+        session.close()
+
+# Delete
+def delete_user():
+    print('hello world')
