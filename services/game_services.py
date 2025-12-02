@@ -40,7 +40,7 @@ def input_game_data(session):
             else:
                 print('ID invalide, inexistant')
     # publisher
-    publishers = session.query(models.Publisher).all
+    publishers = session.query(models.Publisher).all()
     id_publisher = None
 
     if not publishers:
@@ -84,7 +84,7 @@ def create_game():
         print(f'Jeu {game.name_game} ID {game.id_game} créé ')
     except SQLAlchemyError as e:
         session.rollback()
-        print(('Erreur lors de la creation du jeu: {e}'))
+        print((f'Erreur lors de la creation du jeu: {e}'))
     finally:
         session.clos()
 
@@ -126,7 +126,7 @@ def read_game():
             games = session.query(models.Game).filter(models.Game.name_game.ilike(f"%{name}%")).all()
             print(f'{len(games)} jeu(x) trouvé(s): ')
             for g in games:
-                print('ID {g.id_game} - {g.name_game}')
+                print(f'ID {g.id_game} - {g.name_game}')
         else:
             print('choix invalide')
     except Exception as e:
@@ -135,7 +135,7 @@ def read_game():
         session.close()
 
 # Update
-def update_user():
+def update_game():
     session = Session()
     try: 
         game_id_str = input('ID du jeu à modifier: ').strip()
@@ -178,12 +178,12 @@ def update_user():
             print('Liste des publishers disponibles')
             for p in publishers:
                 print(f"ID {p.id_publisher} - {p.name_publisher}")
-            publisher_str = input('Nouvel IG publisher (entrée pour passer / 0 pour enlever le publisher actuel)').strip()
+            publisher_str = input('Nouvel ID publisher (entrée pour passer / 0 pour enlever le publisher actuel)').strip()
             if publisher_str == '0':
                 id_publisher = None
             elif publisher_str and publisher_str.isdigit():
                 publisher_id = int(publisher_str)
-                if any (p.id_publisher == publisher_id for p in publishers)
+                if any (p.id_publisher == publisher_id for p in publishers):
                     id_publisher = publisher_id
                 else:
                     print('ID invalide, inchangé, publisher non trouvé')
@@ -213,10 +213,31 @@ def update_user():
             print('Aucun changement effectué')
 
     except SQLAlchemyError as e:
-        print('Update du jeu impossible: {e}')
+        print(f'Update du jeu impossible: {e}')
     finally:
         session.close()
 
+# Delete
 def delete_game():
     session=Session()
-    
+    try:
+        game_id_str = input('ID du jeu à supprimer: ').strip()
+        if not game_id_str.isdigit():
+            print('ID invalide')
+            return
+        game = session.get(models.Game, int(game_id_str))
+        if not game:
+            print('ID invalide, jeu non trouvé')
+            return
+        confirm = input(f'Confirmer la suppression du jeu ID {game.id_game} - {game.name_game}? (oui/non, yes/no)').strip().lower()
+        if confirm not in ('oui', 'yes'):
+            print('Suppresion annulée')
+            return
+        # suppression du jeu 
+        session.delete(game)
+        session.commit()
+        print('Jeu supprimé')
+    except SQLAlchemyError as e:
+        print(f'Erreur lors de la suppresion du jeu: {e}')
+    finally:
+        session.close()
