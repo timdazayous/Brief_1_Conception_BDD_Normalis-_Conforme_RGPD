@@ -1,10 +1,16 @@
 from sqlalchemy.exc import SQLAlchemyError
 from database import Session
 import models
+import bcrypt
+
+def hash_password(password):
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
 
 def input_user_data():
     pseudo_user = input('Pseudo: ')
-    password_user = input('Mot de passe: ')        
+    password_user_before_hash = input('Mot de passe: ')        
     mail_user = input('Mail: ')
     consent = input('Consentement (oui / non, yes / no): ')
     #consent = consent.lower()
@@ -19,7 +25,7 @@ def input_user_data():
         limitdate_user = int(limitdate)
     except ValueError:
         limitdate_user = 0
-
+    password_user = hash_password(password_user_before_hash)
     return { 
         "pseudo_user": pseudo_user,
         "password_user": password_user,

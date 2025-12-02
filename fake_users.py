@@ -3,17 +3,30 @@ from faker import Faker
 from sqlalchemy.exc import SQLAlchemyError
 from database import Session
 import models
+import bcrypt
+
 
 # liste des localités possible pour diversifier les utilisateurs et etre un peu plus representatif de la realité 
 LOCALES = ['fr_FR', "en_US", "ja_JP", "de_DE", "es_ES", "it_IT", "pt_BR"]
+
+# fonction pour hasher un mdp 
+def hash_password(password):
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
+
+
 
 def generate_fake_user():
     locale = random.choice(LOCALES)
     fake = Faker(locale)
 
+    pwd = fake.password(length=10)
+    hashed_pwd = hash_password(pwd)
+
     return {
         "pseudo_user": fake.user_name(),
-        "password_user": fake.password(length=10),
+        "password_user": hashed_pwd,
         "mail_user": fake.unique.email(),
         "consent_user": fake.boolean(chance_of_getting_true=85), # taux d'acceptation du consentement ici 85%
         "limitdate_user": int(fake.date_between(start_date='+1y', end_date='+3y').strftime("%Y%m%d")) # genere une date limite entre +1 an et +3 ans aleatoirement
@@ -71,3 +84,7 @@ if __name__ == '__main__':
 # 42 utilisateurs ont au moins 1 jeu 
 # 8 n'ont aucun jeu
         
+# 50 utilisateur(s) créé(s) avec Faker
+# 36 utilisateurs ont au moins 1 jeu 
+# 14 n'ont aucun jeu
+# mdp hashé

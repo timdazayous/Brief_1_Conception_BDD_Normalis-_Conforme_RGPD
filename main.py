@@ -25,7 +25,7 @@ def main():
                 update_user()
             elif choix == '4':
                 delete_user()
-            elif choix == '0':
+            elif choix == '5':
                 print('fin')
                 break
             else:
