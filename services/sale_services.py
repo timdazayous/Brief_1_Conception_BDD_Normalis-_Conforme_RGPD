@@ -119,7 +119,7 @@ def update_sale():
     session = Session()
     try:
         sale_id_str = input('ID de la sale à modifier').strip()
-        if not sale_id_str.isdigit()
+        if not sale_id_str.isdigit():
             print('ID invalide')
             return
         sale = session.get(models.Sale, int(sale_id_str))
