@@ -28,6 +28,7 @@ def input_user_data():
         "limitdate_user": limitdate_user
     }
 
+# create
 def create_user(session):
     data = input_user_data()
     try:
@@ -65,6 +66,7 @@ def create_user(session):
         session.rollback()
         print(f"Erreur lors de l'ajout du nouvel user: {e}")
 
+# select
 def read_user():
     session = Session()
     try:
@@ -285,3 +287,36 @@ def update_user():
         print(f"Erreur lors de la mise à jour : {e}")
     finally:
         session.close()
+
+# delete
+def delete_user():
+    session = Session()
+    try:
+        user_id_str = input("Entrez l'ID de l'utilisateur à supprimer:").strip()
+        if not user_id_str.isdigit():
+            print('ID invalide')
+            return
+        
+        user_id = int(user_id_str)
+        user = session.get(models.User, user_id)
+        if not user:
+            print('Utilisateur non trouvé')
+            return
+        
+        # demande de confirmation de la suppression
+        confirm = input(f"Confirmez-vous la suppression de l'utilisateur {user.pseudo_user} - ID {user_id} ? (oui/non yes/no)").strip().lower()
+        if confirm not in ('oui', 'yes'):
+            print('suppression annulée')
+            return
+        
+        session.delete(user)
+        session.commit()
+        # affichage de confirmation de suppression
+        print(f"Utilisateur {user.pseudo_user} - {user_id} suprimé")
+    except SQLAlchemyError as e:
+        session.rollback()
+        print(f"Erreur lors de la suppression de l'utilisateur: {e}")
+    finally: 
+        session.close()
+
+    
