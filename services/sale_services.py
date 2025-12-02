@@ -184,4 +184,24 @@ def update_sale():
 
 # Delete
 def delete_user():
-    print('hello world')
+    session = Session()
+    try:
+        sale_id_str = input('ID de la sale à supprimer: ').strip()
+        if not sale_id_str.isdigit():
+            print("ID Invalide")
+            return
+        sale = session.get(models.Sale, int(sale_id_str))
+        if not sale:
+            print('Sale inexistante')
+            return
+        confirm = input(f'Confirmez la suppression de la sale ID {sale.id_sale} ? (oui/non, yes/no) ').strip().lower()
+        if confirm not in ('oui', 'yes'):
+            print('Suppression annulée')
+            return
+        
+        session.delete(sale)
+        session.commit()
+    except SQLAlchemyError as e:
+        print(f"Erreur lors de la suppression de la sale: {e}")
+    finally:
+        session.close()
