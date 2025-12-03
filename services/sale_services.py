@@ -14,7 +14,7 @@ def input_sale_data(session):
 
     while True:
         game_id_str = input("Entrez l'ID du jeu associé: ").strip()
-        if not game_id_str:
+        if not game_id_str.isdigit():
             print('ID invalide, entier requis')
             continue
         game_id = int(game_id_str) # id_fk a retourner
@@ -118,7 +118,7 @@ def read_sale():
 def update_sale():
     session = Session()
     try:
-        sale_id_str = input('ID de la sale à modifier').strip()
+        sale_id_str = input('ID de la sale à modifier: ').strip()
         if not sale_id_str.isdigit():
             print('ID invalide')
             return
