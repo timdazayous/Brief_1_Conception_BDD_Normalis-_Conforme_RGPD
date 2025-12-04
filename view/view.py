@@ -56,8 +56,6 @@ def run_crud_interface(model_class):
         display_crud_menu(model_name)
         choice = input("Choix (0-4): ").strip()
         
-        # Pas d'ouverture manuelle de session ici (géré dans crud_generic)
-        
         if choice == '1':
             create_generic(model_class, model_name)
         elif choice == '2':

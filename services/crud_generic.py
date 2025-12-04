@@ -194,7 +194,7 @@ def read_generic(model_class, model_name):
                 if model_name.lower() == 'user':
                     print(f"ID {inst.id_user} - pseudo {inst.pseudo_user}")
                 else:
-                    # Afficher les attributs principaux lisiblement s’ils existent
+                    # Afficher les attributs principaux s’ils existent
                     name_attr = next((k for k in inst.__dict__ if 'name' in k.lower() or 'pseudo' in k.lower()), None)
                     if name_attr:
                         id_attr = next((a for a in inst.__dict__.keys() if a.startswith("id_")), None)
