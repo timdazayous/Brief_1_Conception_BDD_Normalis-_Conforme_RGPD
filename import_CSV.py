@@ -10,7 +10,7 @@ def populate_from_CSV(CSV_path):
 
     session = Session()
     try:
-        # preparations dimensions uniques
+        # tableau pour dimensions uniques
         genres = {}
         publishers = {}
         platforms = {}
