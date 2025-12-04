@@ -26,7 +26,7 @@ Ces modèles ont ensuite servi de base pour la création des classes SQLAlchemy 
 
 Pour chaque table du MLD, une classe Python SQLAlchemy a été créée :
 
-- `User`
+- `User` (RGPD hash du mot de passe et du mail dans la DB)
 - `Game`
 - `Sale`
 - `Publisher`
